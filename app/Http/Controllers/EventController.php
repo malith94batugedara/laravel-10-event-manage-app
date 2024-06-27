@@ -7,8 +7,10 @@ use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Country;
 use App\Models\Tag;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\File;
 
 class EventController extends Controller
 {
@@ -68,17 +70,39 @@ class EventController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Event $event)
+    public function edit(Event $event):View
     {
-        //
+        $countries = Country::all();
+        $tags = Tag::all();
+        return view('events.edit',compact('countries','tags','event'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateEventRequest $request, Event $event)
+    public function update(UpdateEventRequest $request, Event $event):RedirectResponse
     {
-        //
+        $data = $request->validated();
+
+        if($request->hasFile('image')){
+
+                $destination ='uploads/events/images/'.$event->image;
+                if(File::exists($destination)){
+                     File::delete($destination);
+                }
+    
+                 $file=$request->file('image');
+                 $filename=time().'.'.$file->getClientOriginalExtension();
+                 $file->move('uploads/events/images/',$filename);
+                 $data['image']=$filename;
+            
+        }
+                 $data['slug'] = Str::slug($request->title);
+
+                 $event->update($data);
+                 $event->tags()->sync($request->tags);
+                 return redirect(route('events.index'))->with('message','Event Updated Successfully!');
+            
     }
 
     /**
