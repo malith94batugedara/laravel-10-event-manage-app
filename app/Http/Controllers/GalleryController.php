@@ -6,6 +6,7 @@ use App\Models\Gallery;
 use App\Http\Requests\StoreGalleryRequest;
 use App\Http\Requests\UpdateGalleryRequest;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\File;
 
 class GalleryController extends Controller
 {
@@ -61,9 +62,9 @@ class GalleryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Gallery $gallery)
+    public function edit(Gallery $gallery):View
     {
-        //
+        return view('galleries.edit',compact('gallery'));
     }
 
     /**
@@ -71,7 +72,25 @@ class GalleryController extends Controller
      */
     public function update(UpdateGalleryRequest $request, Gallery $gallery)
     {
-        //
+        $data = $request->validated();
+
+        if($request->hasFile('image')){
+
+                $destination ='uploads/galleries/images/'.$gallery->image;
+                if(File::exists($destination)){
+                     File::delete($destination);
+                }
+    
+                 $file=$request->file('image');
+                 $filename=time().'.'.$file->getClientOriginalExtension();
+                 $file->move('uploads/galleries/images/',$filename);
+                 $data['image']=$filename;
+            
+        }
+            $data['caption'] = $request->input('caption');
+
+            $gallery->update($data);
+            return redirect(route('galleries.index'))->with('message','Gallery Updated Successfully!');
     }
 
     /**
