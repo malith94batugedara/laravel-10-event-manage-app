@@ -110,6 +110,12 @@ class EventController extends Controller
      */
     public function destroy(Event $event)
     {
-        //
+        $destination ='uploads/events/images/'.$event->image;
+            if(File::exists($destination)){
+                 File::delete($destination);
+            }
+        $event->tags()->detach();
+        $event->delete();
+        return redirect(route('events.index'))->with('message','Event Deleted Successfully!');
     }
 }
