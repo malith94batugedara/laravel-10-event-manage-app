@@ -31,7 +31,8 @@ class StoreEventRequest extends FormRequest
             'country_id' => 'required',
             'city_id' => 'required',
             'description' => 'required',
-            'num_tickets' => 'required'
+            'num_tickets' => 'required',
+            'tags' => 'required | exists:tags,id'
         ];
     }
 }

@@ -6,6 +6,7 @@ use App\Models\Event;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Country;
+use App\Models\Tag;
 use Illuminate\View\View;
 use Illuminate\Support\Str;
 
@@ -16,7 +17,8 @@ class EventController extends Controller
      */
     public function index():View
     {
-        return view('events.index');
+        $events = Event::all();
+        return view('events.index',compact('events'));
     }
 
     /**
@@ -25,7 +27,8 @@ class EventController extends Controller
     public function create():View
     {
         $countries = Country::all();
-        return view('events.create',compact('countries'));
+        $tags = Tag::all();
+        return view('events.create',compact('countries','tags'));
     }
 
     /**
@@ -45,8 +48,8 @@ class EventController extends Controller
             $data['user_id'] = auth()->id();
             $data['slug'] = Str::slug($request->title);
 
-            Event::create($data);
-            // $event->tags()->attach($request->tags);
+            $event = Event::create($data);
+            $event->tags()->attach($request->tags);
             return redirect(route('events.index'))->with('message','Event Added Successfully!');
         }
         else{
