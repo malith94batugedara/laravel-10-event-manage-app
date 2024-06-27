@@ -32,5 +32,22 @@
                 {{ $slot }}
             </main>
         </div>
+            <script>
+                  document.addEventListener('DOMContentLoaded', (event) => {
+                  const startDateInput = document.getElementById('start_date');
+                  const endDateInput = document.getElementById('end_date');
+
+        // Ensure the end date is at least today or later when the page loads
+                  const today = new Date().toISOString().split('T')[0];
+                  startDateInput.setAttribute('min', today);
+                  endDateInput.setAttribute('min', today);
+
+        // Update the min attribute of the end date based on the start date
+                  startDateInput.addEventListener('change', function() {
+                      const startDate = this.value;
+                      endDateInput.setAttribute('min', startDate);
+                });
+            });
+            </script>
     </body>
 </html>

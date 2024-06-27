@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Event;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
+use App\Models\Country;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
 
 class EventController extends Controller
 {
@@ -20,9 +22,10 @@ class EventController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create():View
     {
-        //
+        $countries = Country::all();
+        return view('events.create',compact('countries'));
     }
 
     /**
@@ -30,7 +33,25 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        //
+        if($request->hasFile('image')){
+            
+            $data = $request->validated();
+
+            $file=$request->file('image');
+            $filename=time().'.'.$file->getClientOriginalExtension();
+            $file->move('uploads/events/images',$filename);
+            $data['image']=$filename;
+
+            $data['user_id'] = auth()->id();
+            $data['slug'] = Str::slug($request->title);
+
+            Event::create($data);
+            // $event->tags()->attach($request->tags);
+            return redirect(route('events.index'))->with('message','Event Added Successfully!');
+        }
+        else{
+            return back();
+        }
     }
 
     /**
