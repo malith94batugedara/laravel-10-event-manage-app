@@ -14,15 +14,16 @@ class GalleryController extends Controller
      */
     public function index():View
     {
-        return view('galleries.index');
+        $galleries = Gallery::all();
+        return view('galleries.index',compact('galleries'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create():View
     {
-        //
+        return view('galleries.create');
     }
 
     /**
@@ -30,8 +31,24 @@ class GalleryController extends Controller
      */
     public function store(StoreGalleryRequest $request)
     {
-        //
+        if ($request->hasFile('image')) {
+            $data = $request->validated();
+
+                $data['caption'] = $request->input('caption');
+
+                    $file=$request->file('image');
+                    $filename=time().'.'.$file->getClientOriginalExtension();
+                    $file->move('uploads/galleries/images/',$filename);
+                    $data['image']=$filename;
+               
+                // $data['image'] = Storage::putFile('galleries',$request->file('image'));
+                $data['user_id'] = auth()->id();
+            
+            Gallery::create($data);
+
+            return to_route('galleries.index')->with('message','Gallery Added Successfully!');
     }
+}
 
     /**
      * Display the specified resource.

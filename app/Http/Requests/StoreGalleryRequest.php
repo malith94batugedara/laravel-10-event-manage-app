@@ -11,7 +11,7 @@ class StoreGalleryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class StoreGalleryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'caption' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ];
     }
 }
