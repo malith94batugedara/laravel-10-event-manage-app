@@ -10,10 +10,12 @@ class EventShowController extends Controller
     /**
      * Handle the incoming request.
      */
-    public function __invoke($id)
+    public function __invoke($id,Event $event)
     {
         $event = Event::findOrFail($id);
 
-        return view('events.show',compact('event'));
+        $like = $event->likes()->where('user_id',auth()->id())->first();
+
+        return view('events.show',compact('event','like'));
     }
 }
