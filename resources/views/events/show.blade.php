@@ -11,6 +11,7 @@
                         </div>
                     </a>
                 </div>
+                @auth
                 <div class="flex space-x-2 p-4">
                         <button type="button"
                             class="text-white  focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -43,7 +44,7 @@
                             </svg>
                         </button>
                       </div>
-
+                @endauth
                 <div class="flex flex-col p-4">
                     <span class="text-indigo-600 font-semibold">Host Info</span>
                     <div class="flex space-x-4 mt-6 bg-slate-200 p-2 rounded-md">
