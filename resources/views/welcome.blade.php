@@ -12,8 +12,8 @@
                             src="{{ asset('uploads/events/images/' . $event->image) }}" alt="{{ $event->title }}">
 
                         <div class="flex flex-col justify-between py-6 lg:mx-6">
-                            <a href=""
-                                class="text-xl font-semibold text-gray-800 hover:underline dark:text-white ">
+                            <a href="{{ route('eventShow',$event->id) }}"
+                                class="text-xl font-semibold text-gray-800 hover:underline dark:text-black ">
                                 {{ $event->title }}
                             </a>
 
